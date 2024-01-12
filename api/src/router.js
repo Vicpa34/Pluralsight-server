@@ -1,9 +1,12 @@
 const { Router } = require('express');
 const router = Router();
+const path = require('path');
 const filename = (req, file, callback) => {
     callback(null, file.originalname);
 };
 const storage = multer.diskStorage({ destination: 'api/uploads/', filename });
+const photoPath = path.resolve(__dirname, '../../client/photo-viewer.html');
+
 const fileFilter = (req, file, callback) => {
     if (file.mimetype !== 'image/png') {
         req.fileValidationError = 'Wrong file type';
@@ -26,6 +29,7 @@ router.post('/upload', upload.single('photo'), async (request, response) => {
 });
 
 const upload = multer({ fileFilter, storage });
+router.get('/photo-viewer', (request, response) => { response.sendFile(photoPath) })
 
 
 module.exports = router;
